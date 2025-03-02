@@ -8,6 +8,7 @@ import time
 
 
 #URL manipulation
+'''
 season_2014_2015_url = "https://stats.nba.com/stats/leagueLeaders?LeagueID=00&PerMode=PerGame&Scope=S&Season=2014-15&SeasonType=Regular%20Season&StatCategory=PTS"
 season_2015_2016_url = "https://stats.nba.com/stats/leagueLeaders?LeagueID=00&PerMode=PerGame&Scope=S&Season=2015-16&SeasonType=Regular%20Season&StatCategory=PTS"
 season_2016_2017_url = "https://stats.nba.com/stats/leagueLeaders?LeagueID=00&PerMode=PerGame&Scope=S&Season=2016-17&SeasonType=Regular%20Season&StatCategory=PTS"
@@ -31,9 +32,12 @@ response_2020_2021 = requests.get(url=season_2020_2021_url).json()
 response_2021_2022 = requests.get(url=season_2022_2023_url).json()
 response_2022_2023 = requests.get(url=season_2022_2023_url).json()
 response_2023_2024 = requests.get(url=season_2023_2024_url).json()
-response_2024_2025 = requests.get(url=season_2024_2025_url).json()
+response_2024_2025 = requests.get(url=season_2024_2025_url).json()'''
 
+season_2014_2015_url = "https://stats.nba.com/stats/leagueLeaders?LeagueID=00&PerMode=PerGame&Scope=S&Season=2014-15&SeasonType=Regular%20Season&StatCategory=PTS"
+response_2014_2015 = requests.get(url=season_2014_2015_url).json()
 table_headers = response_2014_2015["resultSet"]["headers"]
+
 '''print(response_2017_2018["resultSet"])
 print(response_2017_2018['resultSet']["rowSet"][0])
 print(pd.DataFrame(response_2017_2018["resultSet"]["rowSet"], columns=table_headers))'''
