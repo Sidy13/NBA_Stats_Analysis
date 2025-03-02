@@ -133,6 +133,7 @@ while choice not in [1, 2, 3,4]:
         print("Invalid input. Please enter a number between 1 and 3.")
 
 
+
 if choice == 1:
     name = input("Enter the name of the player whose stats you want to see: ")
     name_search = dataset[dataset["PLAYER"] == name]
