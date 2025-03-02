@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 import requests
+import time
 
 
 
@@ -32,7 +33,43 @@ response_2022_2023 = requests.get(url=season_2022_2023_url).json()
 response_2023_2024 = requests.get(url=season_2023_2024_url).json()
 response_2024_2025 = requests.get(url=season_2024_2025_url).json()
 
-print(response_2017_2018['resultSet']["rowSet"])
+table_headers = response_2014_2015["resultSet"]["headers"]
+'''print(response_2017_2018["resultSet"])
+print(response_2017_2018['resultSet']["rowSet"][0])
+print(pd.DataFrame(response_2017_2018["resultSet"]["rowSet"], columns=table_headers))'''
+
+headers = {
+    "accept": "*/*",
+    "accept-encoding": "gzip, deflate, br, zstd",
+    "accept-language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
+    "if-modified-since": "Sun, 02 Mar 2025 16:56:59 GMT",
+    "if-none-match": '"6bfda48f79dbbf167a49bbb63220a0a1"',
+    "origin": "https://www.nba.com",
+    "priority": "u=1, i",
+    "referer": "https://www.nba.com/",
+    "sec-ch-ua": '"Not(A:Brand";v="99", "Google Chrome";v="133", "Chromium";v="133"',
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": '"macOS"',
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-site",
+    "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36"
+}
+begin_loop = time.time()
+df_columns = ["Season"]+ table_headers
+df = pd.DataFrame(columns = df_columns)
+seasons = ["2014-15", "2015-16", "2016-17", "2017-18", "2018-19", "2019-20", "2020-21", "2021-22", "2022-23", "2023-24", "2024-25"]
+for season in seasons:
+    season_url = "https://stats.nba.com/stats/leagueLeaders?LeagueID=00&PerMode=PerGame&Scope=S&Season="+season+"&SeasonType=Regular%20Season&StatCategory=PTS"
+    response = requests.get(url=season_url).json()
+    df1 = pd.DataFrame(response["resultSet"]["rowSet"], columns=table_headers)
+    df2 = pd.DataFrame({"Season": [season for i in range(len(df1))]})
+    df3 = pd.concat([df2, df1], axis=1)
+    df = pd.concat([df, df3], axis=0)
+
+print("Process completed, total time:", time.time()-begin_loop)
+df_excel = df.to_excel("league_Leaders_Per_Points.xlsx", index=False)
+
 
 
 
