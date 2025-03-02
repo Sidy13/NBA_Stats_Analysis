@@ -42,7 +42,7 @@ table_headers = response_2014_2015["resultSet"]["headers"]
 print(response_2017_2018['resultSet']["rowSet"][0])
 print(pd.DataFrame(response_2017_2018["resultSet"]["rowSet"], columns=table_headers))'''
 
-headers = {
+'''headers = {
     "accept": "*/*",
     "accept-encoding": "gzip, deflate, br, zstd",
     "accept-language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
@@ -72,8 +72,24 @@ for season in seasons:
     df = pd.concat([df, df3], axis=0)
 
 print("Process completed, total time:", time.time()-begin_loop)
-df_excel = df.to_excel("league_Leaders_Per_Points.xlsx", index=False)
+df_excel = df.to_excel("league_Leaders_Per_Points.xlsx", index=False)'''
 
+dataset = pd.read_excel("League_Leaders_Per_Points.xlsx")
 
+rank_1 = dataset[dataset["RANK"]==1]
+print(rank_1)
 
+x_values = rank_1["PTS"].values
+y_values = rank_1["EFF"].values
+player_names = rank_1["PLAYER"].values
+seasons = rank_1["Season"].values
+
+plt.scatter(x_values, y_values)
+
+for i in range(len(x_values)):
+    plt.text(x_values[i], y_values[i]-0.5, f"{player_names[i]} ({seasons[i]})", ha='center', va='bottom')
+plt.title("PTS by EFF")
+plt.xlabel("PTS")
+plt.ylabel("EFF")
+plt.show()
 
