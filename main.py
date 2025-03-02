@@ -35,6 +35,38 @@ def compare_players(column):
         plt.show()
 
 
+def track_player_performance():
+    name = input("Enter the name of the player you want to track: ")
+    player_data = dataset[dataset["PLAYER"] == name]
+
+    if player_data.empty:
+        print("Player not found.")
+        return
+
+    player_data = player_data.sort_values(by="Season")
+
+    plt.figure(figsize=(10, 6))
+    plt.plot(player_data["Season"], player_data["PTS"], marker='o', linestyle='-', label="Points Per Game",
+             color="blue")
+    plt.plot(player_data["Season"], player_data["EFF"], marker='s', linestyle='--', label="Efficiency",
+             color="red")
+    plt.plot(player_data["Season"], player_data["RANK"], marker='^', linestyle='-.', label="Ranking", color="green")
+
+    for i in range(len(player_data)):
+        plt.text(player_data["Season"].values[i], player_data["PTS"].values[i] + 0.5, str(player_data["PTS"].values[i]),
+                 ha='center', color="blue")
+        plt.text(player_data["Season"].values[i], player_data["EFF"].values[i] + 0.5, str(player_data["EFF"].values[i]),
+                 ha='center', color="red")
+        plt.text(player_data["Season"].values[i], player_data["RANK"].values[i] + 0.5,
+                 str(player_data["RANK"].values[i]), ha='center', color="green")
+
+    plt.title(f"Evolution of {name} performance (Points, Efficiency, Ranking)")
+    plt.xlabel("Season")
+    plt.ylabel("Value")
+    plt.legend()
+    plt.xticks(rotation=45)
+    plt.grid(True)
+    plt.show()
 
 
 #URL manipulation
@@ -49,7 +81,7 @@ print(response_2017_2018['resultSet']["rowSet"][0])
 print(pd.DataFrame(response_2017_2018["resultSet"]["rowSet"], columns=table_headers))'''
 
 
-begin_loop = time.time()
+'''begin_loop = time.time()
 df_columns = ["Season"]+ table_headers
 df = pd.DataFrame(columns = df_columns)
 seasons = ["2014-15", "2015-16", "2016-17", "2017-18", "2018-19", "2019-20", "2020-21", "2021-22", "2022-23", "2023-24", "2024-25"]
@@ -62,7 +94,7 @@ for season in seasons:
     df = pd.concat([df, df3], axis=0)
 
 print("Process completed, total time:", time.time()-begin_loop)
-df_excel = df.to_excel("league_Leaders_Per_Points.xlsx", index=False)
+df_excel = df.to_excel("league_Leaders_Per_Points.xlsx", index=False)'''
 
 dataset = pd.read_excel("League_Leaders_Per_Points.xlsx")
 
@@ -92,9 +124,9 @@ pd.set_option('display.width', 1000)
 pd.set_option('display.colheader_justify', 'center')
 pd.set_option('display.float_format', '{:.2f}'.format)
 
-print("1. Observe a player stats \n2. Compare two players by name \n3. Compare two players by ranking")
+print("1. Observe a player stats \n2. Observe the evolution of a player\n3. Compare two players by name \n4. Compare two players by ranking")
 choice = 0
-while choice not in [1, 2, 3]:
+while choice not in [1, 2, 3,4]:
     try:
         choice = int(input("Enter your choice: "))
     except ValueError:
@@ -108,9 +140,12 @@ if choice == 1:
         print("Player not found")
     else:
         print(name_search.to_string(index=False))
+
 elif choice == 2:
-    compare_players("EFF")
+    track_player_performance()
 elif choice == 3:
+    compare_players("EFF")
+elif choice == 4:
     compare_players("RANK")
 
 
