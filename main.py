@@ -3,6 +3,38 @@ import pandas as pd
 import requests
 import time
 
+def compare_players(column):
+    players = []
+    for i in range(2):
+        name = input(f"Enter the name of player {i + 1}: ")
+        name_search = dataset[dataset["PLAYER"] == name]
+        if name_search.empty:
+            print(f"Player '{name}' not found.")
+        else:
+            players.append(name_search)
+
+    if players:
+        selected_players = pd.concat(players, ignore_index=True)
+        unique_players = selected_players["PLAYER"].unique()
+        colors = plt.cm.get_cmap("tab10", len(unique_players))
+
+        for i, player in enumerate(unique_players):
+            player_data = selected_players[selected_players["PLAYER"] == player]
+            x_values = player_data["PTS"].values
+            y_values = player_data[column].values
+            color = colors(i)
+            plt.scatter(x_values, y_values, label=player, color=color)
+            for j in range(len(x_values)):
+                plt.text(x_values[j], y_values[j] - 0.5, f"{player} ({player_data['Season'].values[j]})",
+                         ha='center', va='bottom', fontsize=9, color=color)
+
+        plt.title(f"Points by {column}")
+        plt.xlabel("PTS")
+        plt.ylabel(column)
+        plt.legend()
+        plt.show()
+
+
 
 
 #URL manipulation
@@ -77,81 +109,9 @@ if choice == 1:
     else:
         print(name_search.to_string(index=False))
 elif choice == 2:
-        players = []
-
-        for i in range(2):
-            name = input(f"Enter the name of player {i + 1}: ")
-            name_search = dataset[dataset["PLAYER"] == name]
-            if name_search.empty:
-                print(f"Player '{name}' not found.")
-            else:
-                players.append(name_search)
-                print(f"Player '{name}' added successfully.")
-
-        if players:
-            selected_players = pd.concat(players, ignore_index=True)
-        else:
-            print("No players selected.")
-            selected_players = None
-
-        if selected_players is not None:
-            unique_players = selected_players["PLAYER"].unique()
-            colors = plt.cm.get_cmap("tab10", len(unique_players))
-
-            for i, player in enumerate(unique_players):
-                player_data = selected_players[selected_players["PLAYER"] == player]
-                x_values = player_data["PTS"].values
-                y_values = player_data["EFF"].values
-                color = colors(i)
-                plt.scatter(x_values, y_values, label=player, color=color)
-
-                seasons = player_data["Season"].values
-                for j in range(len(x_values)):
-                    plt.text(x_values[j], y_values[j] - 0.5, f"{player} ({seasons[j]})",
-                             ha='center', va='bottom', fontsize=9, color=color)
-
-            plt.title("Points by efficiency")
-            plt.xlabel("PTS")
-            plt.ylabel("EFF")
-            plt.legend()
-            plt.show()
+    compare_players("EFF")
 elif choice == 3:
-        players = []
-
-        for i in range(2):
-            name = input(f"Enter the name of player {i + 1}: ")
-            name_search = dataset[dataset["PLAYER"] == name]
-            if name_search.empty:
-                print(f"Player '{name}' not found.")
-            else:
-                players.append(name_search)
-                print(f"Player '{name}' added successfully.")
-
-        if players:
-            selected_players = pd.concat(players, ignore_index=True)
-        else:
-            print("No players selected.")
-            selected_players = None
-
-        if selected_players is not None:
-            unique_players = selected_players["PLAYER"].unique()
-            colors = plt.cm.get_cmap("tab10", len(unique_players))
+    compare_players("RANK")
 
 
-            for i, player in enumerate(unique_players):
-                player_data = selected_players[selected_players["PLAYER"] == player]
-                x_values = player_data["PTS"].values
-                y_values = player_data["RANK"].values
-                color = colors(i)
-                plt.scatter(x_values, y_values, label=player, color=color)
 
-                seasons = player_data["Season"].values
-                for j in range(len(x_values)):
-                    plt.text(x_values[j], y_values[j] - 0.5, f"{player} ({seasons[j]})",
-                             ha='center', va='bottom', fontsize=9, color=color)
-
-            plt.title("Points by ranking")
-            plt.xlabel("PTS")
-            plt.ylabel("RANK")
-            plt.legend()
-            plt.show()
