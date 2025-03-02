@@ -102,7 +102,7 @@ pd.set_option('display.width', 1000)
 pd.set_option('display.colheader_justify', 'center')
 pd.set_option('display.float_format', '{:.2f}'.format)
 
-print("1. Observe a player stats \n2. Compare two players by name \n3. Compare two players by rank")
+print("1. Observe a player stats \n2. Compare two players by name \n3. Compare two players by ranking")
 choice = 0
 while choice not in [1, 2, 3]:
     try:
@@ -131,21 +131,20 @@ elif choice == 2:
                 print(f"Player '{name}' added successfully.")
 
         if players:
-            selected_players = pd.concat(players, ignore_index=True)  # Concaténer la liste des DataFrames des joueurs
+            selected_players = pd.concat(players, ignore_index=True)
         else:
             print("No players selected.")
             selected_players = None
 
         if selected_players is not None:
             unique_players = selected_players["PLAYER"].unique()
-            colors = plt.cm.get_cmap("tab10", len(unique_players))  # Générer une palette de couleurs
+            colors = plt.cm.get_cmap("tab10", len(unique_players))
 
-            plt.figure(figsize=(8, 6))
             for i, player in enumerate(unique_players):
                 player_data = selected_players[selected_players["PLAYER"] == player]
                 x_values = player_data["PTS"].values
                 y_values = player_data["EFF"].values
-                color = colors(i)  # Prendre une couleur unique pour chaque joueur
+                color = colors(i)
                 plt.scatter(x_values, y_values, label=player, color=color)
 
                 seasons = player_data["Season"].values
@@ -153,8 +152,48 @@ elif choice == 2:
                     plt.text(x_values[j], y_values[j] - 0.5, f"{player} ({seasons[j]})",
                              ha='center', va='bottom', fontsize=9, color=color)
 
-            plt.title("PTS by EFF")
+            plt.title("Points by efficiency")
             plt.xlabel("PTS")
             plt.ylabel("EFF")
+            plt.legend()
+            plt.show()
+elif choice == 3:
+        players = []
+
+        for i in range(2):
+            name = input(f"Enter the name of player {i + 1}: ")
+            name_search = dataset[dataset["PLAYER"] == name]
+            if name_search.empty:
+                print(f"Player '{name}' not found.")
+            else:
+                players.append(name_search)
+                print(f"Player '{name}' added successfully.")
+
+        if players:
+            selected_players = pd.concat(players, ignore_index=True)
+        else:
+            print("No players selected.")
+            selected_players = None
+
+        if selected_players is not None:
+            unique_players = selected_players["PLAYER"].unique()
+            colors = plt.cm.get_cmap("tab10", len(unique_players))
+
+
+            for i, player in enumerate(unique_players):
+                player_data = selected_players[selected_players["PLAYER"] == player]
+                x_values = player_data["PTS"].values
+                y_values = player_data["RANK"].values
+                color = colors(i)
+                plt.scatter(x_values, y_values, label=player, color=color)
+
+                seasons = player_data["Season"].values
+                for j in range(len(x_values)):
+                    plt.text(x_values[j], y_values[j] - 0.5, f"{player} ({seasons[j]})",
+                             ha='center', va='bottom', fontsize=9, color=color)
+
+            plt.title("Points by ranking")
+            plt.xlabel("PTS")
+            plt.ylabel("RANK")
             plt.legend()
             plt.show()
